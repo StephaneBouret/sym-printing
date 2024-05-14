@@ -3,19 +3,23 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
+use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     protected $slugger;
+    protected $passwordHasher;
 
-    public function __construct(SluggerInterface $slugger)
+    public function __construct(SluggerInterface $slugger, UserPasswordHasherInterface $passwordHasher)
     {
         $this->slugger = $slugger;
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function load(ObjectManager $manager): void
@@ -24,6 +28,33 @@ class AppFixtures extends Fixture
         $faker->addProvider(new \Liior\Faker\Prices($faker));
         $faker->addProvider(new \Bezhanov\Faker\Provider\Commerce($faker));
         $faker->addProvider(new \Bluemmb\Faker\PicsumPhotosProvider($faker));
+
+        $admin = new User;
+
+        $hash = $this->passwordHasher->hashPassword($admin, "password");
+
+        $admin->setEmail("admin@gmail.com")
+            ->setFirstname("Admin")
+            ->setLastname("Admin")
+            ->setPassword($hash)
+            ->setRoles(['ROLE_ADMIN']);
+
+        $manager->persist($admin);
+
+        $users = [];
+
+        for ($u = 0; $u < 5; $u++) {
+            $user = new User;
+            $hash = $this->passwordHasher->hashPassword($user, "password");
+            $user->setEmail("user$u@gmail.com")
+                ->setFirstname($faker->firstName())
+                ->setLastname($faker->lastName())
+                ->setPassword($hash);
+
+            $users[] = $user;
+
+            $manager->persist($user);
+        }
 
         $products = [];
 
