@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -15,15 +16,20 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom du produit est obligatoire !")]
+    #[Assert\Length(min: 3, max: 255, minMessage: 'Le nom du produit doit avoir au moins {{ limit }} caractères')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le prix du produit est obligatoire !")]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La description courte est obligatoire")]
+    #[Assert\Length(min: 20, minMessage: "La description courte doit faire au moins {{ limit }} caractères")]
     private ?string $shortDescription = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
