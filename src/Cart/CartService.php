@@ -97,6 +97,9 @@ class CartService
         return $total;
     }
 
+    /**
+     * @return CartItem[]
+     */
     public function getDetailedCartItems(): array
     {
         $detailedCart = [];
@@ -117,5 +120,10 @@ class CartService
         }
 
         return $detailedCart;
+    }
+
+    public function empty()
+    {
+        $this->saveCart([]);
     }
 }
