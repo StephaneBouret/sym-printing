@@ -20,23 +20,26 @@
 			</thead>
 			<tbody>
 				{% for p in purchases %}
-					<tr>
-						<td>{{ p.id }}</td>
-						<td>{{ p.adress }}<br>{{ p.postalCode }},
-							{{ p.city }}</td>
-						<td>{{ p.purchasedAt | date('d/m/Y H:i') }}</td>
-						<td>
-							<ul>
-								{% for item in p.purchaseItems %}
-									<li>{{ item.quantity }}
-										x
-										{{ item.productName }}
-										({{ item.total | amount }})</li>
-								{% endfor %}
-							</ul>
-						</td>
-						<td>{{ p.total | amount }}</td>
-					</tr>
+					{% set status = p.status %}
+					{% if status == 'PAID' %}
+						<tr>
+							<td>{{ p.id }}</td>
+							<td>{{ p.adress }}<br>{{ p.postalCode }},
+								{{ p.city }}</td>
+							<td>{{ p.purchasedAt | date('d/m/Y H:i') }}</td>
+							<td>
+								<ul>
+									{% for item in p.purchaseItems %}
+										<li>{{ item.quantity }}
+											x
+											{{ item.productName }}
+											({{ item.total | amount }})</li>
+									{% endfor %}
+								</ul>
+							</td>
+							<td>{{ p.total | amount }}</td>
+						</tr>
+					{% endif %}
 				{% endfor %}
 			</tbody>
 		</table>
