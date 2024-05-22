@@ -32,6 +32,11 @@ class PurchaseItem
     #[ORM\Column]
     private ?int $total = null;
 
+    public function __toString()
+    {
+        return $this->productName;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
